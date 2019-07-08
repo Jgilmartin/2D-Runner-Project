@@ -33,7 +33,9 @@ class Game:
         # Creating the game screen
         self.game_screen = pygame.display.set_mode((width, height))
         self.game_screen.fill(WHITE_C)
+
         pygame.display.set_caption(title)
+
         background = pygame.image.load(image_path)
         self.image = pygame.transform.scale(background, (width, height))
     
@@ -41,6 +43,8 @@ class Game:
         # input_y handles character movement
         gameOver = False
         input_y = 0
+
+        platform1 = Platform(400, 200, 1, 550)
 
         while gameOver == False:
             for event in pygame.event.get():
@@ -52,6 +56,7 @@ class Game:
                     elif event.key == pygame.K_DOWN:
                         direction_y = -1
                 print(event)
+            platform1.draw(self.game_screen)
 
             # Graphics Rendering (inside for event loop)
         self.game_screen.fill(WHITE_C)
@@ -59,6 +64,7 @@ class Game:
         pygame.display.update()
         clock.tick(self.TICK_RATE)
 
+        
         
         
 
@@ -86,6 +92,16 @@ class Platform(GameObject):
         self.platHeight = platHeight
         self.platWidth = platWidth
         self.platSpeed = platSpeed
+
+    def move(self, platHeight, platWidth, pos_x):
+        self.height = platHeight
+        self.width = platWidth
+        self.pos_x = pos_x
+
+        
+class Player(GameObject):
+    def __init__(self, otherObject):
+
 
 new_game = Game('C:/Users/Yeet-Machine/Desktop/download.png', SCREEN_TITLE, SCREEN_W, SCREEN_H)
 new_game.runGameLoop()
