@@ -24,7 +24,8 @@ TICK_RATE = 60
 class Game():
     # Setup Screen Size
 
-
+    # Creating a game that takes in a few parameters for the game window
+    # 
     def __init__(self, backgroundImage, height, width, title):
         self.backgroundImage = backgroundImage
         self.height = height
@@ -37,34 +38,36 @@ class Game():
 
     def run_game_loop(self):
         x_pos = 200
-        y_pos = 200
+        y_pos = 600
+        playerPos_x = 225
+        playerPos_y = 400
+        playerVelocity = 0
         gameOver = False
-        direction_y = 0
         
         clock = pygame.time.Clock()
+        # Current problem is that sprite flies off the screen very quickly
+        # Need to implement collision in order to prevent the sprite from flying off the screen and possibly find a more efficient posititon physics function
         while gameOver != True:
-            platform1 = Platform(x_pos, y_pos, 200, 200)
+            platform1 = Platform(y_pos, x_pos, 200, 200)
+            platform2 = Platform(700, 500, 200, 100)
+            player1 = Player(playerPos_y, playerPos_x, 50, 50)
+
+            if playerVelocity <= 20:
+                playerVelocity += (playerVelocity + 0.02)
+            playerPos_y += playerVelocity
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     gameOver = True
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
-                        direction_y = 1
-                    elif event.key == pygame.K_DOWN:
-                        direction_y = -1
-                elif event.type == pygame.KEYUP:
-                    direction_y = 0
-            if direction_y == -1:
-                x_pos += 20
-            if direction_y == 1:
-                x_pos -= 20
-
+                elif event.type == pygame.K_DOWN:
+                    if event.type == pygame.K_UP:
+                        playerVelocity = -40
                 print(event)
             # pygame.draw.rect(self.game_screen, BLACK_C, (y_pos, x_pos, x_size, y_size))
             
             self.game_screen.fill(WHITE_C)
+            player1.draw(self.game_screen)
             platform1.draw(self.game_screen)
-            
+            platform2.draw(self.game_screen)
             pygame.display.update()
             clock.tick(TICK_RATE)
 
@@ -84,6 +87,7 @@ class Platform():
         self.x_pos = x_pos
         self.width = width
         self.height = height
+
     def draw(self, background):
         background.blit(self.image, (self.x_pos, self.y_pos))
 
@@ -93,12 +97,22 @@ class Platform():
 class Player():
     SPEED = 10
     def __init__(self, y_pos, x_pos, width, height):
-        self.image = pygame.image.load()
-        self.y_pos = y_pos
+
+        self.image = pygame.image.load('Runner_stickman.png')
+        self.image = pygame.transform.scale(self.image, (width, height))
         self.x_pos = x_pos
+        self.y_pos = y_pos
         self.width = width
         self.height = height
-        
+
+    def collisionDetection(self, platform):
+        if self.y_pos + self.height >= platform.y_pos:
+            return True
+
+
+
+    def draw(self, background):
+        background.blit(self.image, (self.x_pos, self.y_pos))
 
 new_game = Game('forest_background.png', SCREEN_H, SCREEN_W, SCREEN_TITLE)
 new_game.run_game_loop()
