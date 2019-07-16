@@ -40,7 +40,7 @@ class Game():
         x_pos = 200
         y_pos = 600
         playerPos_x = 225
-        playerPos_y = 400
+        playerPos_y = 200
         playerVelocity = 0
         gameOver = False
         
@@ -49,25 +49,26 @@ class Game():
         # Need to implement collision in order to prevent the sprite from flying off the screen and possibly find a more efficient posititon physics function
         while gameOver != True:
             platform1 = Platform(y_pos, x_pos, 200, 200)
-            platform2 = Platform(700, 500, 200, 100)
             player1 = Player(playerPos_y, playerPos_x, 50, 50)
 
             if playerVelocity <= 20:
-                playerVelocity += (playerVelocity + 0.02)
+                playerVelocity += 0.9
             playerPos_y += playerVelocity
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     gameOver = True
-                elif event.type == pygame.K_DOWN:
-                    if event.type == pygame.K_UP:
-                        playerVelocity = -40
-                print(event)
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        playerVelocity = -10
+
+            if player1.collisionDetection(platform1) == True:
+                playerPos_y = platform1.y_pos - 50
+            print(event)
             # pygame.draw.rect(self.game_screen, BLACK_C, (y_pos, x_pos, x_size, y_size))
-            
             self.game_screen.fill(WHITE_C)
             player1.draw(self.game_screen)
-            platform1.draw(self.game_screen)
-            platform2.draw(self.game_screen)
+        #    platform1.draw(self.game_screen)
             pygame.display.update()
             clock.tick(TICK_RATE)
 
@@ -106,9 +107,17 @@ class Player():
         self.height = height
 
     def collisionDetection(self, platform):
+        self.platform = platform
         if self.y_pos + self.height >= platform.y_pos:
             return True
+        else:
+            return False
 
+    def jump(self):
+        
+        if self.collisionDetection(platform1) == True:
+            jumpAllowed = True
+        
 
 
     def draw(self, background):
