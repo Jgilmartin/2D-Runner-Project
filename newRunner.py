@@ -52,7 +52,9 @@ class Game():
             player1 = Player(playerPos_y, playerPos_x, 50, 50)
 
             if playerVelocity <= 20:
-                playerVelocity += 0.9
+                playerVelocity += 1
+                if playerVelocity > 20:
+                    playerVelocity = 20
             playerPos_y += playerVelocity
 
             for event in pygame.event.get():
@@ -62,13 +64,13 @@ class Game():
                     if event.key == pygame.K_UP:
                         playerVelocity = -10
 
-            if player1.collisionDetection(platform1) == True:
-                playerPos_y = platform1.y_pos - 50
+            if player1.collisionDetection(platform1, playerVelocity) == True:
+                playerVelocity = 0
             print(event)
             # pygame.draw.rect(self.game_screen, BLACK_C, (y_pos, x_pos, x_size, y_size))
             self.game_screen.fill(WHITE_C)
             player1.draw(self.game_screen)
-        #    platform1.draw(self.game_screen)
+            #platform1.draw(self.game_screen)
             pygame.display.update()
             clock.tick(TICK_RATE)
 
@@ -106,9 +108,10 @@ class Player():
         self.width = width
         self.height = height
 
-    def collisionDetection(self, platform):
+    def collisionDetection(self, platform, playerVelocity): 
         self.platform = platform
         if self.y_pos + self.height >= platform.y_pos:
+            playerVelocity = 0
             return True
         else:
             return False
