@@ -49,20 +49,25 @@ class Game():
         gameOver = False
         recentCollision = False
         clock = pygame.time.Clock()
-        # Current problem is that sprite flies off the screen very quickly
-        # Need to implement collision in order to prevent the sprite from flying off the screen and possibly find a more efficient posititon physics function
+        activePlatform = Platform(500, 500, 250, 300)
+        
+        player1 = Player(playerPos_y, playerPos_x, 50, 50)
         while gameOver != True:
-            platform1 = Platform(y_pos, x_pos, 200, 200)
-            player1 = Player(playerPos_y, playerPos_x, 50, 50)
-
-            if playerVelocity <= 20 and player1.collisionDetection(platform1, playerVelocity) == False:
+            
+            if activePlatform.x_pos+activePlatform.width < -20:
+                activePlatform = Platform(300, 805, activePlatform.width, 200)
+            activePlatform.x_pos += -20
+            
+            if player1.y_pos > 800:
+                player1.y_pos =0
+            if playerVelocity < 20 and player1.collisionDetection(activePlatform, playerVelocity) == False:
                 playerVelocity += 1
             if playerVelocity > 20:
                 playerVelocity = 20
 
-            elif player1.collisionDetection(platform1, playerVelocity) == True and recentCollision == False:
+            elif player1.collisionDetection(activePlatform, playerVelocity) == True and recentCollision == False:
                 playerVelocity = 0
-                player1.y_pos = platform1.y_pos
+                player1.y_pos = activePlatform.y_pos
                 recentCollision = True
 
             playerPos_y += playerVelocity
@@ -73,7 +78,7 @@ class Game():
                 if event.type == pygame.QUIT:
                     gameOver = True
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_UP and player1.collisionDetection(activePlatform, playerVelocity) == True:
                         playerVelocity = -10
                         recentCollision = False
 
@@ -82,7 +87,7 @@ class Game():
             # pygame.draw.rect(self.game_screen, BLACK_C, (y_pos, x_pos, x_size, y_size))
             self.game_screen.fill(WHITE_C)
             player1.draw(self.game_screen)
-            platform1.draw(self.game_screen)
+            activePlatform.draw(self.game_screen)
             pygame.display.update()
             clock.tick(TICK_RATE)
 
@@ -109,8 +114,9 @@ class Platform():
 
     def move(self):
         yee = 0
-def spawnPlatform():
-    yuh = 0
+
+def spawnPlatform(activePlatform):
+    activePlatform = Platform(500, 500, 250, 330)
 
 class Player():
     SPEED = 10
@@ -127,16 +133,10 @@ class Player():
     # Can recreate quicksand platforms by chaning the if statemnt to > 0 instead of >= 0
     def collisionDetection(self, platform, playerVelocity): 
         self.platform = platform
-        if self.y_pos + self.height >= platform.y_pos and playerVelocity >= 0:
+        if self.y_pos + self.height >= platform.y_pos and playerVelocity >= 0 and self.x_pos+self.width >= platform.x_pos and self.x_pos <= platform.x_pos+platform.width:
             return True
         else:
             return False
-
-    def jump(self):
-        
-        if self.collisionDetection(platform1) == True:
-            jumpAllowed = True
-        
 
 
     def draw(self, background):
