@@ -16,7 +16,7 @@ BLACK_C = (0, 0, 0)
 SCREEN_TITLE = 'Runner'
 SCREEN_W = 800
 SCREEN_H = 800
-TICK_RATE = 120
+TICK_RATE = 30
 info_font = pygame.font.SysFont("Verdana", 20)
 
 pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
@@ -32,7 +32,7 @@ class Game():
     fps_overlay = info_font.render(str(fps), True, BLACK_C)
     def __init__(self, backgroundImage, height, width, title):
         self.backgroundImage = backgroundImage
-        self.height = height
+        self.height = height    
         self.width = width
         self.title = title
         
@@ -47,7 +47,6 @@ class Game():
         playerPos_y = 200
         playerVelocity = 0
         gameOver = False
-        recentCollision = False
         clock = pygame.time.Clock()
         activePlatform = Platform(500, 500, 250, 300)
         
@@ -65,23 +64,18 @@ class Game():
             if playerVelocity > 20:
                 playerVelocity = 20
 
-            elif player1.collisionDetection(activePlatform, playerVelocity) == True and recentCollision == False:
+            elif player1.collisionDetection(activePlatform, playerVelocity) == True:
                 playerVelocity = 0
-                player1.y_pos = activePlatform.y_pos
-                recentCollision = True
+                player1.y_pos = activePlatform.y_pos-player1.height
 
-            playerPos_y += playerVelocity
+            player1.y_pos += playerVelocity # move the players position every frame
             
-            
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     gameOver = True
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP and player1.collisionDetection(activePlatform, playerVelocity) == True:
                         playerVelocity = -10
-                        recentCollision = False
-
 
             print(event)
             # pygame.draw.rect(self.game_screen, BLACK_C, (y_pos, x_pos, x_size, y_size))
