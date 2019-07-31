@@ -4,7 +4,7 @@
 
 # To DO: 
 #Create Color classes and scheme for game
-
+playerVelocity = 0
 from pygame.locals import *
 import pygame
 pygame.init()
@@ -74,11 +74,12 @@ class Game():
                     gameOver = True
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
-                        playerVelocity = -10
-                        recentCollision = False
+                        player1.jump(platform1)
 
 
-            print(event)
+
+            #print(event)
+            print(playerVelocity)
             # pygame.draw.rect(self.game_screen, BLACK_C, (y_pos, x_pos, x_size, y_size))
             self.game_screen.fill(WHITE_C)
             player1.draw(self.game_screen)
@@ -132,10 +133,10 @@ class Player():
         else:
             return False
 
-    def jump(self):
+    def jump(self, platform):
         
-        if self.collisionDetection(platform1) == True:
-            jumpAllowed = True
+        if playerVelocity == 0:
+            self.playerVelocity = -10
         
 
 
